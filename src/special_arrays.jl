@@ -48,11 +48,10 @@ end
 
 dimension(t::UnitVector) = t.n - 1
 
-function transform_with(flag::LogJacFlag, t::UnitVector, x::AbstractVector, index)
+function transform_with!(y::AbstractVector, flag::LogJacFlag, t::UnitVector, x::AbstractVector, index)
     @unpack n = t
     T = extended_eltype(x)
     r = one(T)
-    y = Vector{T}(undef, n)
     ℓ = logjac_zero(flag, T)
     @inbounds for i in 1:(n - 1)
         xi = x[index]
@@ -62,6 +61,13 @@ function transform_with(flag::LogJacFlag, t::UnitVector, x::AbstractVector, inde
     end
     y[end] = √r
     y, ℓ, index
+end
+
+function transform_with(flag::LogJacFlag, t::UnitVector, x::AbstractVector, index)
+    @unpack n = t
+    T = extended_eltype(x)
+    y = Vector{T}(undef, n)
+    transform_with!(y, flag, t, x, index)
 end
 
 inverse_eltype(t::UnitVector, y::AbstractVector) = extended_eltype(y)
@@ -97,13 +103,12 @@ end
 
 dimension(t::UnitSimplex) = t.n - 1
 
-function transform_with(flag::LogJacFlag, t::UnitSimplex, x::AbstractVector, index)
+function transform_with!(y::AbstractVector, flag::LogJacFlag, t::UnitSimplex, x::AbstractVector, index)
     @unpack n = t
     T = extended_eltype(x)
 
     ℓ = logjac_zero(flag, T)
     stick = one(T)
-    y = Vector{T}(undef, n)
     @inbounds for i in 1:n-1
         xi = x[index]
         index += 1
@@ -120,6 +125,13 @@ function transform_with(flag::LogJacFlag, t::UnitSimplex, x::AbstractVector, ind
     y[end] = stick
 
     y, ℓ, index
+end
+
+function transform_with(flag::LogJacFlag, t::UnitSimplex, x::AbstractVector, index)
+    @unpack n = t
+    T = extended_eltype(x)
+    y = Vector{T}(undef, n)
+    transform_with!(y, flag, t, x, index)
 end
 
 inverse_eltype(t::UnitSimplex, y::AbstractVector) = extended_eltype(y)
@@ -173,11 +185,10 @@ end
 
 dimension(t::CorrCholeskyFactor) = unit_triangular_dimension(t.n)
 
-function transform_with(flag::LogJacFlag, t::CorrCholeskyFactor, x::AbstractVector, index)
+function transform_with!(U::AbstractMatrix, flag::LogJacFlag, t::CorrCholeskyFactor, x::AbstractVector, index)
     @unpack n = t
     T = extended_eltype(x)
     ℓ = logjac_zero(flag, T)
-    U = Matrix{T}(undef, n, n)
     @inbounds for col in 1:n
         r = one(T)
         for row in 1:(col-1)
@@ -189,6 +200,13 @@ function transform_with(flag::LogJacFlag, t::CorrCholeskyFactor, x::AbstractVect
         U[col, col] = √r
     end
     UpperTriangular(U), ℓ, index
+end
+
+function transform_with(flag::LogJacFlag, t::CorrCholeskyFactor, x::AbstractVector, index)
+    @unpack n = t
+    T = extended_eltype(x)
+    U = Matrix{T}(undef, n, n)
+    transform_with!(U, flag, t, x, index)
 end
 
 inverse_eltype(t::CorrCholeskyFactor, U::UpperTriangular) = extended_eltype(U)
