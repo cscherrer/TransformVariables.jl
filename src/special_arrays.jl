@@ -40,9 +40,9 @@ Euclidean norm.
 """
 struct UnitVector{N} <: VectorTransform
     n::N
-    function UnitVector(n::Integer)
+    function UnitVector(n::D) where {D<:Integer}
         @argcheck n ≥ 1 "Dimension should be positive."
-        new(n)
+        new{D}(n)
     end
 end
 
@@ -87,11 +87,11 @@ end
 
 Transform `n-1` real numbers to a vector of length `n` whose elements are non-negative and sum to one.
 """
-struct UnitSimplex{N} <: VectorTransform
-    n::N
-    function UnitSimplex(n::Integer)
+struct UnitSimplex{D} <: VectorTransform
+    n::D
+    function UnitSimplex(n::D) where {D<:Integer}
         @argcheck n ≥ 1 "Dimension should be positive."
-        new(n)
+        new{D}(n)
     end
 end
 
@@ -163,11 +163,11 @@ If
 then `Diagonal(σ) * U' * z` will be a multivariate normal with the given variances and
 correlation matrix `U' * U`.
 """
-struct CorrCholeskyFactor{N} <: VectorTransform
-    n::N
-    function CorrCholeskyFactor(n::Integer)
+struct CorrCholeskyFactor{D} <: VectorTransform
+    n::D
+    function CorrCholeskyFactor(n::D) where {D<:Integer}
         @argcheck n ≥ 1 "Dimension should be positive."
-        new(n)
+        new{D}(n)
     end
 end
 

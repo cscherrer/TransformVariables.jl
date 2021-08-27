@@ -110,15 +110,19 @@ $(TYPEDEF)
 
 Transform consecutive groups of real numbers to a tuple, using the given transformations.
 """
-struct TransformTuple{T,N} <: VectorTransform
+struct TransformTuple{T,D} <: VectorTransform
     transformations::T
-    dimension::N
+    dimension::D
     function TransformTuple(transformations::T) where {T <: NTransforms}
-        new{T}(transformations, _sum_dimensions(transformations))
+        s = _sum_dimensions(transformations)
+        D = typeof(s)
+        new{T,D}(transformations, s)
     end
     function TransformTuple(transformations::T
                             ) where {N, S <: NTransforms, T <: NamedTuple{N, S}}
-        new{T}(transformations, _sum_dimensions(transformations))
+        s = _sum_dimensions(transformations)
+        D = typeof(s)
+        new{T,D}(transformations, s)
     end
 end
 
