@@ -38,8 +38,8 @@ Inverse of [`l2_remainder_transform`](@ref) in `x` and `y`.
 Transform `n-1` real numbers to a unit vector of length `n`, under the
 Euclidean norm.
 """
-struct UnitVector{N} <: VectorTransform
-    n::N
+struct UnitVector{D} <: VectorTransform
+    n::D
     function UnitVector(n::D) where {D<:Integer}
         @argcheck n ≥ 1 "Dimension should be positive."
         new{D}(n)
