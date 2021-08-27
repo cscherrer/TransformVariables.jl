@@ -22,7 +22,7 @@ $(SIGNATURES)
 
 Number of elements (strictly) above the diagonal in an ``n×n`` matrix.
 """
-unit_triangular_dimension(n::Int) = n * (n-1) ÷ 2
+unit_triangular_dimension(n::Integer) = n * (n-1) ÷ 2
 
 ###
 ### type calculations

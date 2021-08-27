@@ -37,10 +37,10 @@ as(::Type{Array}, transformation::AbstractTransform, dims::Tuple{Vararg{Int}}) =
 
 as(::Type{Array}, dims::Tuple{Vararg{Int}}) = as(Array, Identity(), dims)
 
-as(::Type{Array}, transformation::AbstractTransform, dims::Int...) =
+as(::Type{Array}, transformation::AbstractTransform, dims::Integer...) =
     ArrayTransform(transformation, dims)
 
-as(::Type{Array}, dims::Int...) = as(Array, Identity(), dims)
+as(::Type{Array}, dims::Integer...) = as(Array, Identity(), dims)
 
 function as(::Type{Vector}, args...)
     t = as(Array, args...)
@@ -110,9 +110,9 @@ $(TYPEDEF)
 
 Transform consecutive groups of real numbers to a tuple, using the given transformations.
 """
-struct TransformTuple{T} <: VectorTransform
+struct TransformTuple{T,N} <: VectorTransform
     transformations::T
-    dimension::Int
+    dimension::N
     function TransformTuple(transformations::T) where {T <: NTransforms}
         new{T}(transformations, _sum_dimensions(transformations))
     end
